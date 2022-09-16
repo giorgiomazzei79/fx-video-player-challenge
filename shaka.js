@@ -56,7 +56,7 @@ async function shakaInitPlayer(manifestUri) {
     getSubtitleTracks();
 
     // pull audio tracks
-    // ...
+    getAudioTracks();
 
     // set progress bar duration
     setProgressBar();
@@ -105,9 +105,25 @@ function getSubtitleTracks() {
 
 function getAudioTracks() {
   // get available audio tracks from Shaka
+  const audioLanguages = player.getAudioLanguages();
   // select default language
+  const defaultLanguage =
+    audioLanguages.find((language) => language === "en") || audioLanguages[0];
   // set Shaka default audioTrack
+  player.selectAudioLanguage(defaultLanguage);
   // add audio options to UI
+  const audioTracksWrapper = document.querySelector(
+    ".video-container__audio-tracks"
+  );
+  audioLanguages.forEach((language) => {
+    let item = document.createElement("div");
+    item.className = "track-item";
+    item.innerText = language;
+    audioTracksWrapper.appendChild(item);
+    item.addEventListener("click", ({ target }) => {
+      player.selectAudioLanguage(target.innerText);
+    });
+  });
 }
 
 function renderSubtitle(activeCues) {
