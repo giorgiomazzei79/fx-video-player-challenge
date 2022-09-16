@@ -22,10 +22,22 @@ function loadShaka() {
   });
 }
 
+let restrictions;
+
+const deviceType = getDeviceType();
+
+if (deviceType === "crapDevice") {
+  restrictions = {
+    maxWidth: 180,
+    maxHeight: 144,
+  };
+}
+
 const shakaConfig = {
   streaming: {
     alwaysStreamText: true,
   },
+  restrictions,
 };
 
 async function shakaInitPlayer(manifestUri) {
@@ -144,6 +156,13 @@ function parseTime(timeInSecs) {
     .toString()
     .padStart(2, "0");
   return `${minutes}:${seconds}`;
+}
+
+// I HAD PROBLEMS IMPORTING THIS FUNCTION AND FOR THE SAKE OF SAVING TIME I PASTED IT HERE
+function getDeviceType() {
+  const queryParams = window.location.search;
+  const urlParams = new URLSearchParams(queryParams);
+  return urlParams.get("deviceType");
 }
 
 function setProgressBar() {
